@@ -17,6 +17,7 @@ package capacity
 import (
 	"fmt"
 	"sort"
+	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -306,6 +307,34 @@ func (rm *resourceMetric) utilString(availableFormat bool) string {
 	return resourceString(rm.utilization, rm.allocatable, availableFormat)
 }
 
+func prettyOutput(input string) string {
+	l := len(input)
+	if l > 2 {
+		if input[l-1:l] == "m" {
+			if i, err := strconv.Atoi(input[0 : l-1]); err == nil {
+				return fmt.Sprintf("%.2f", float64(i)/float64(1000))
+			}
+		} else if input[l-1:l] == "n" {
+			if i, err := strconv.Atoi(input[0 : l-1]); err == nil {
+				return fmt.Sprintf("%.2f", float64(i)/float64(1000000000))
+			}
+		} else if input[l-2:l] == "Mi" {
+			if i, err := strconv.Atoi(input[0 : l-2]); err == nil {
+				return fmt.Sprintf("%.2fGi", float64(i)/float64(1024))
+			}
+		} else if input[l-2:l] == "Ki" {
+			if i, err := strconv.Atoi(input[0 : l-2]); err == nil {
+				return fmt.Sprintf("%.2fGi", float64(i)/float64(1024*1024))
+			}
+		} else if l > 9 {
+			if i, err := strconv.Atoi(input); err == nil {
+				return fmt.Sprintf("%.2fGi", float64(i)/float64(1000000000))
+			}
+		}
+	}
+	return input
+}
+
 func resourceString(actual, allocatable resource.Quantity, availableFormat bool) string {
 	utilPercent := int64(0)
 	if allocatable.MilliValue() > 0 {
@@ -318,8 +347,7 @@ func resourceString(actual, allocatable resource.Quantity, availableFormat bool)
 		}
 		return fmt.Sprintf("%s/%s", actual.String(), allocatable.String())
 	}
-	return fmt.Sprintf("%s (%d%%%%)", actual.String(), utilPercent)
-
+	return fmt.Sprintf("%s/%s (%d%%%%)", prettyOutput(actual.String()), prettyOutput(allocatable.String()), utilPercent)
 }
 
 // NOTE: This might not be a great place for closures due to the cyclical nature of how resourceType works. Perhaps better implemented another way.

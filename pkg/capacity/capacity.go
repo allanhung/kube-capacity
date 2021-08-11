@@ -22,7 +22,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	metrics "k8s.io/metrics/pkg/client/clientset/versioned"
 
-	"github.com/robscott/kube-capacity/pkg/kube"
+	"github.com/allanhung/kube-capacity/pkg/kube"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1beta1 "k8s.io/metrics/pkg/apis/metrics/v1beta1"

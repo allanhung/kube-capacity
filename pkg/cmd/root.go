@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/robscott/kube-capacity/pkg/capacity"
+	"github.com/allanhung/kube-capacity/pkg/capacity"
 	"github.com/spf13/cobra"
 )
 

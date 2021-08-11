@@ -1,4 +1,4 @@
-module github.com/robscott/kube-capacity
+module github.com/allanhung/kube-capacity
 
 go 1.13
 
